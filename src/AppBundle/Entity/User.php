@@ -42,7 +42,7 @@ class User implements UserInterface
     private $firstname;
 
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Todo", mappedBy="todo", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\todoList", mappedBy="list", orphanRemoval=true)
      */
     private $todos;
 

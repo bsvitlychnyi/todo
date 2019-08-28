@@ -31,33 +31,33 @@ class Todo
     /**
      * @var string
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="todos")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\todoList", inversedBy="item")
      *
      */
-    private $user;
+    private $list;
 
     /**
-     * Set user
+     * Set list
      *
-     * @param string $user
+     * @param string $list
      *
      * @return Todo
      */
-    public function setUser($user)
+    public function setList($list)
     {
-        $this->user = $user;
+        $this->list = $list;
 
         return $this;
     }
 
     /**
-     * Get user
+     * Get list
      *
      * @return string
      */
-    public function getUser()
+    public function getList()
     {
-        return $this->user;
+        return $this->list;
     }
 
     /**

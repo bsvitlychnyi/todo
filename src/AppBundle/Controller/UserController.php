@@ -3,6 +3,8 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Todo;
+use AppBundle\Entity\todoList;
+use http\Header;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -15,13 +17,13 @@ use AppBundle\Entity\User;
 class UserController extends FOSRestController
 {
     /**
-     * @Rest\Get("/user/{id}/")
-     * @param $id
+     * @Rest\Get("/user/{userId}/list/{listId}/")
+     * @param $userId, $listId
      * @return array|View
      */
-    public function actionGetAllTodo($id) // посмотреть задания пользователя
+    public function actionGetAllTodo($userId, $listId) // посмотреть задания пользователя
     {
-        $todo = $this->getDoctrine()->getRepository('AppBundle:Todo')->findBy(array('user'=>$id));
+        $todo = $this->getDoctrine()->getRepository('AppBundle:Todo')->findBy(array('list'=>$listId));
         if (empty($todo)){
             return new View("Заданий нет", Response::HTTP_NOT_FOUND);
         }
@@ -35,19 +37,20 @@ class UserController extends FOSRestController
     }
 
     /**
-     * @Rest\Post("/user/{id}/add/")
+     * @Rest\Post("/user/{userId}/list/{listId}/add/")
      */
-    public function actionAddTodo(Request $request, $id) // добавить задание пользователя
+    public function actionAddTodo(Request $request, $userId, $listId) // добавить задание пользователя
     {
         $text = $request->get('text');
         if (empty($text)){
             return new View(" NULL VALUES ARE NOT ALLOWED", Response::HTTP_NOT_ACCEPTABLE);
         }
         else{
-            $user = $this->getDoctrine()->getRepository('AppBundle:User')->findOneBy(array('id'=>$id));
+            $list = $this->getDoctrine()->getRepository('AppBundle:todoList')->findOneBy(array('id'=>$listId));
+            // можно доп проверку какуюнить навернуть
             $newTodo = new Todo;
             $newTodo->setText($text);
-            $newTodo->setUser($user);
+            $newTodo->setList($list);
             $em = $this->getDoctrine()->getManager();
             $em->persist($newTodo);
             $em->flush();
@@ -56,9 +59,51 @@ class UserController extends FOSRestController
         }
 
     /**
-     * @Rest\Post("/user/{id}/dell/")
+     * @Rest\Post("/user/{id}/addList/")
      */
-    public function actionDellTodo(Request $request, $id) // удалить задани(е/я) пользователя sfdsdefsefewf
+    public function actionAddTodoList(Request $request, $id) // добавить список заданий
+    {
+        $text = $request->get('text');
+        if (empty($text)){
+            return new View(" NULL VALUES ARE NOT ALLOWED", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        else{
+            $user = $this->getDoctrine()->getRepository('AppBundle:User')->findOneBy(array('id'=>$id));
+            $newTodoList = new todoList();
+            $newTodoList->setText($text);
+            $newTodoList->setUser($user);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($newTodoList);
+            $em->flush();
+            return new View("Дело в шляпе", Response::HTTP_OK);
+        }
+    }
+
+    /**
+     * @Rest\Get("/user/{id}/list/")
+     * @param $id
+     * @return array|View
+     */
+    public function actionGetAllLists($id) // посмотреть задания пользователя
+    {
+        $todoLists = $this->getDoctrine()->getRepository('AppBundle:TodoList')->findBy(array('user'=>$id));
+        if (empty($todoLists)){
+            return new View("Списков нет", Response::HTTP_NOT_FOUND);
+        }
+        else{
+            $result = array();
+            foreach ($todoLists as $todoList){
+                $result[$todoList->getId()]=$todoList->getText();
+            }
+            return $result;
+        }
+    }
+
+
+    /**
+     * @Rest\Post("/user/{userId}/list/{listId}/dell/")
+     */
+    public function actionDellTodo(Request $request, $userId, $listId) // удалить задани(е/я) пользователя
     {
         $string = $request->get('text');
         $textsForDell = explode("||SPLITER||", $string);
@@ -67,7 +112,7 @@ class UserController extends FOSRestController
             return new View(" NULL VALUES ARE NOT ALLOWED", Response::HTTP_NOT_ACCEPTABLE);
         }
         else{
-            $todo = $this->getDoctrine()->getRepository('AppBundle:Todo')->findBy(array('user'=>$id));
+            $todo = $this->getDoctrine()->getRepository('AppBundle:Todo')->findBy(array('list'=>$listId));
             $em = $this->getDoctrine()->getManager();
 
             foreach ($todo as $forDell){
@@ -119,7 +164,7 @@ class UserController extends FOSRestController
         }
         else{
             if ($user->getPassword() == $pass){
-                return array('token'=>$user->getApiKey(), 'userId'=> $user->getId());
+                return new View(array('token'=>$user->getApiKey(), 'userId'=> $user->getId()), Response::HTTP_ACCEPTED);
             }
             else{
                 return new View("Неверный пароль", Response::HTTP_LOCKED);
