@@ -31,7 +31,7 @@ class Todo
     /**
      * @var string
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\todoList", inversedBy="item")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\TodoList", inversedBy="list")
      *
      */
     private $list;

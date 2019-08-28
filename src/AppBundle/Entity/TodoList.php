@@ -2,15 +2,16 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * TodoList
  *
  * @ORM\Table(name="Todo_list")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\todoListRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\TodoListRepository")
  */
-class todoList
+class TodoList
 {
     /**
      * @var int
@@ -24,7 +25,7 @@ class todoList
     /**
      * @var string
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="todoLists")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="TodoLists")
      *
      */
     private $user;
@@ -38,7 +39,7 @@ class todoList
 
 
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Todo", mappedBy="item", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Todo", mappedBy="list", orphanRemoval=true)
      */
     private $item;
 
@@ -58,7 +59,7 @@ class todoList
      *
      * @param string $user
      *
-     * @return todoList
+     * @return TodoList
      */
     public function setUser($user)
     {
@@ -82,7 +83,7 @@ class todoList
      *
      * @param string $text
      *
-     * @return todoList
+     * @return TodoList
      */
     public function setText($text)
     {
@@ -101,18 +102,9 @@ class todoList
         return $this->text;
     }
 
-    /**
-     * Set item
-     *
-     * @param string $item
-     *
-     * @return todoList
-     */
-    public function setItem($item)
+    public function __construct()
     {
-        $this->item = $item;
-
-        return $this;
+        $this->item = new ArrayCollection();
     }
 
     /**

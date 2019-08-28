@@ -3,7 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Todo;
-use AppBundle\Entity\todoList;
+use AppBundle\Entity\TodoList;
 use http\Header;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -43,10 +43,10 @@ class UserController extends FOSRestController
     {
         $text = $request->get('text');
         if (empty($text)){
-            return new View(" NULL VALUES ARE NOT ALLOWED", Response::HTTP_NOT_ACCEPTABLE);
+            return new View(" NULL VALUES ARE NOT ALLOWED", Response::HTTP_NO_CONTENT);
         }
         else{
-            $list = $this->getDoctrine()->getRepository('AppBundle:todoList')->findOneBy(array('id'=>$listId));
+            $list = $this->getDoctrine()->getRepository('AppBundle:TodoList')->findOneBy(array('id'=>$listId));
             // можно доп проверку какуюнить навернуть
             $newTodo = new Todo;
             $newTodo->setText($text);
@@ -69,13 +69,13 @@ class UserController extends FOSRestController
         }
         else{
             $user = $this->getDoctrine()->getRepository('AppBundle:User')->findOneBy(array('id'=>$id));
-            $newTodoList = new todoList();
+            $newTodoList = new TodoList();
             $newTodoList->setText($text);
             $newTodoList->setUser($user);
             $em = $this->getDoctrine()->getManager();
             $em->persist($newTodoList);
             $em->flush();
-            return new View("Дело в шляпе", Response::HTTP_OK);
+            return new View(array('message'=>'Nice', 'id'=>$newTodoList->getId()), Response::HTTP_OK);
         }
     }
 
@@ -124,6 +124,31 @@ class UserController extends FOSRestController
             return new View("Дело в шляпе", Response::HTTP_OK);
         }
     }
+
+    /**
+     * @Rest\Post("/user/{userId}/dellListFull/")
+     */
+    public function actionDellList(Request $request, $userId) // удалить задани(е/я) пользователя
+    {
+        $id = $request->get('id');
+
+        if (empty($id)){
+            return new View(" NULL VALUES ARE NOT ALLOWED", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        else{
+            $list = $this->getDoctrine()->getRepository('AppBundle:TodoList')->findOneBy(array('id'=>$id));
+            if (empty($list)) {
+                return new View("Not found", Response::HTTP_NOT_ACCEPTABLE);
+            }
+            else{
+                $em = $this->getDoctrine()->getManager();
+                $em->remove($list);
+                $em->flush();
+                return new View("Дело в шляпе", Response::HTTP_OK);
+            }
+        }
+    }
+
 
     /**
      * @Rest\Post("/registration/")
