@@ -54,7 +54,7 @@ class UserController extends FOSRestController
             $em = $this->getDoctrine()->getManager();
             $em->persist($newTodo);
             $em->flush();
-            return new View("Дело в шляпе", Response::HTTP_OK);
+            return new View(array('message'=>'Successful'), Response::HTTP_OK);
             }
         }
 
@@ -169,7 +169,7 @@ class UserController extends FOSRestController
         $data->setUsername($username);
         $data->setEmail($email);
         $data->setPassword($pass);
-        $data->setApiKey(md5(uniqid($username, true))        );
+        $data->setApiKey(md5(uniqid($username, true)));
         $em = $this->getDoctrine()->getManager();
         $em->persist($data);
         $em->flush();
@@ -189,7 +189,7 @@ class UserController extends FOSRestController
         }
         else{
             if ($user->getPassword() == $pass){
-                return new View(array('token'=>$user->getApiKey(), 'userId'=> $user->getId()), Response::HTTP_ACCEPTED);
+                return new View(array('token'=>$user->getApiKey(), 'userId'=> $user->getId(), 'userName'=>$user->getFirstname()), Response::HTTP_ACCEPTED);
             }
             else{
                 return new View("Неверный пароль", Response::HTTP_LOCKED);
