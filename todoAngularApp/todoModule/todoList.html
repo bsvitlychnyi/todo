@@ -1,0 +1,173 @@
+<div class="container" ng-controller="TodoListController as todoList">
+  <div class="row">
+    <div class="col-4">
+
+
+
+<div class="row align-items-center">
+  <div class="col-md-auto">
+    <img src="img/empty_avatar.jpg" width="110" height="110" class="round"> 
+  </div>
+  <div class="col">
+    <a href="#" ng-click="todoList.profile()">
+      <span class="text-justify" style="font-size: 30pt">{{ todoList.user.name }}</span>
+    </a>
+  </div>
+</div>
+
+
+
+</div>
+    <div class="col-7">
+      <div ng-if="todoList.title==='Profile'">
+      <h3>Ваш профиль</h3>
+      Тут будет поле для загрузки аватарки
+    </div>
+    
+    <div ng-if="todoList.title===0">
+      <h4>Выберите список с заданиями или создайте новый, чтобы приступить к работе</h4>
+    </div>
+
+      <form ng-submit="todoList.addTodo()" ng-if="todoList.title && todoList.title!=='Profile'">
+        <h3>{{todoList.title}}</h3>
+        <input type="text" class="form-control form-control-lg" ng-model="todoList.todoText"  size="30" placeholder="Добавить новое задание">
+      </form>
+
+</div>
+</div>
+
+
+  <div class="row">
+    <div class="col-4">
+
+      <ul class="list-group">
+        
+        <li class="list-group-item list-group-item-secondary">Мои списки дел</li>
+        <li class="list-group-item " ng-if="todoList.lists.length===0">Пока тут пусто</li>
+        <li class="list-group-item p-0">
+        
+        <form class=" border-0 list-group-item p-0" ng-submit="todoList.addTodoList()" >
+          <input type="text" class="form-control form-control-lg m-0 border-0" ng-model="todoList.todoListTitle" size="30"
+               placeholder="Новый список">
+        </form>
+        
+        </li>
+        <li class="list-group-item " ng-repeat="list in todoList.lists track by $index" >
+          <div class="row align-items-center">
+            <div class="col-md-auto">
+              <a href="#" ng-click="todoList.archiveList( list.id )">
+            <img src="img/delete.png" width="20" height="20" alt="Удалить этот список"></a>
+            </div>
+            <div class="col">
+              <a href="#" ng-click="todoList.getListItems( list.id, list.text )">{{list.text}}</a>
+            </div>
+          </div>
+          
+        </li>
+      </ul>
+
+
+
+    </div>    
+    <div class="col-7">
+
+  <div ng-if="todoList.title && todoList.title!=='Profile'">
+    
+     <div ng-if="todoList.todos.length===0">
+        <img src="img/todo.jpg" alt="todo">
+      </div>
+
+      <ul class="list-group">
+        <li class="list-group-item" ng-repeat="todo in todoList.todos">          
+          <label class="checkbox">
+            <input type="checkbox" class="checkbox" ng-model="todo.done">
+            <span class="text-justify done-{{todo.done}}">{{todo.text}}</span>
+          </label>          
+        </li>
+        <li class="list-group-item " ng-if="todoList.todos.length - todoList.remaining()">
+          <a href="#" ng-click="todoList.archive()">
+          <img src="img/delete-notes.png" width="23" height="23" alt="Удалить этот список"> Удалить завершенные задачи ({{todoList.todos.length - todoList.remaining()}}) из списка</a>
+        </li>
+      </ul>
+    
+    </div>
+
+
+
+
+    <div ng-if="todoList.title===0">
+      <img src="img/todo.jpg" alt="todo">
+    </div>
+
+    <div ng-if="todoList.title==='Profile'" ng-controller="mainController as mc">
+
+      <ul class="list-group">
+        <form class=" border-0 list-group-item p-0 m-0" ng-submit="mc.changeUserInfo()">
+
+        <li class="list-group-item">    
+            <div class="row align-items-center">
+            <div class="col-2">
+              Логин
+            </div>
+            <div class="col p-0">
+              
+          <input type="text" class="form-control form-control-lg m-0 border-0" size="30" ng-model="mc.newUser.username">
+            </div>
+          </div>
+        </li> 
+
+        <li class="list-group-item">    
+            <div class="row align-items-center">
+            <div class="col-2">
+              Имя
+            </div>
+            <div class="col p-0">
+              
+          <input type="text" class="form-control form-control-lg m-0 border-0" size="30" ng-model="mc.newUser.name">
+            </div>
+          </div>
+        </li> 
+
+        <li class="list-group-item">    
+            <div class="row align-items-center">
+            <div class="col-2">
+              Фамилия
+            </div>
+            <div class="col p-0">
+              
+          <input type="text" class="form-control form-control-lg m-0 border-0" size="30" ng-model="mc.newUser.name" >
+            </div>
+          </div>
+        </li> 
+
+        <li class="list-group-item">    
+            <div class="row align-items-center">
+            <div class="col-2">
+              Email
+            </div>
+            <div class="col p-0">
+              
+          <input type="text" class="form-control form-control-lg m-0 border-0" size="30" ng-model="mc.newUser.email" >
+            </div>
+          </div>
+        </li> 
+ 
+        <button type="submit">Применить изменения</button>
+        </form>       
+      </ul>
+
+
+
+  
+<input type="file" id="file" name="file"/>
+<button ng-click="add()">Add</button>
+
+
+    </div>
+
+    </div>
+<div class="col">  
+  {{ todoList.todos }}
+</div>
+</div>
+</div>

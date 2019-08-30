@@ -1,0 +1,57 @@
+<div class="container">
+  <div class="row">
+    <div class="col"></div>
+    <div class="col-7">
+<div ng-app="todoApp" ng-controller="mainController">
+   
+
+    <!-- FORM ============ -->
+  <h2>Форма регистрации</h2>
+    <form name="userForm" ng-submit="submitForm()" novalidate>
+
+        <!-- NAME -->
+        <div class="form-group" ng-class="{ 'has-error' : userForm.name.$invalid && !userForm.name.$pristine }">
+            <label>Ваше имя</label>
+            <input type="text" name="name" class="form-control" ng-model="name" required>
+            <p ng-show="userForm.name.$invalid && !userForm.name.$pristine" class="help-block">Заполните это поле</p>
+        </div>
+      
+        <!-- USERNAME -->
+        <div class="form-group" ng-class="{ 'has-error' : userForm.username.$invalid && !userForm.username.$pristine }">
+            <label>Придумайте логин</label>
+            <input type="text" name="username" class="form-control" ng-model="username" ng-minlength="3" ng-maxlength="8" required>
+
+            <p ng-show="userForm.username.$error.minlength" class="help-block">От трех символов</p>
+            <p ng-show="userForm.username.$error.maxlength" class="help-block">Не больше восьми символов</p>
+        </div>
+        
+        <!-- EMAIL -->
+        <div class="form-group" ng-class="{ 'has-error' : userForm.email.$invalid && !userForm.email.$pristine }">
+            <label>Email</label>
+            <input type="email" name="email" class="form-control" ng-model="email" required>
+
+            <p ng-show="userForm.email.$invalid && !userForm.email.$pristine" class="help-block">Какой-то странный email</p>
+        </div>
+
+        <!-- Password -->
+        <div class="form-group" ng-class="{ 'has-error' : userForm.password.$invalid && !userForm.password.$pristine }">
+            <label>Пароль</label>
+            <input type="password" name="password" class="form-control" ng-model="password" autocomplete="new-password" required>
+
+            <p ng-show="userForm.password.$invalid && !userForm.password.$pristine" class="help-block">Введите пароль</p>
+        </div>
+
+        <!-- repeatPassword -->
+        <div class="form-group" ng-class="{ 'has-error' : userForm.repeatPassword.$invalid && !userForm.repeatPassword.$pristine }">
+            <label>Повторите пароль</label>
+            <input type="password" name="repeatPassword" class="form-control" ng-model="repeatPassword" autocomplete="new-password" required>
+            <p ng-show="password !== repeatPassword" class="help-block">Пароли не совпадают</p>
+            <p ng-show="userForm.repeatPassword.$invalid && !userForm.repeatPassword.$pristine" class="help-block">Введите пароль повторно</p>
+        </div>
+        
+        <button type="submit"  ng-click="addUser(name, username, email, repeatPassword)" class="btn btn-primary" ng-disabled="userForm.$invalid || user.password !== user.repeatPassword">Регистрация</button> или <a href="/login">Войти</a> 
+        
+    </form>
+  </div>
+</div>
+<div class="col"></div></div></div>

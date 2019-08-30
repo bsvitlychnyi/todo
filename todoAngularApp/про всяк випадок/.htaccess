@@ -1,0 +1,30 @@
+<VirtualHost *:80>
+    DocumentRoot /var/www/todo/todo
+    ServerName todo.loc
+    ServerAlias www.todo.loc
+
+    DocumentRoot /var/www/todo/todo
+    <Directory /var/www/todo/todo>
+	AllowOverride All
+        Order Allow,Deny
+        Allow from All
+        <IfModule mod_rewrite.c> 
+		Options -MultiViews
+		RewriteEngine on
+		RewriteCond %{REQUEST_FILENAME} -s [OR]
+		RewriteCond %{REQUEST_FILENAME} -l [OR]
+		RewriteCond %{REQUEST_FILENAME} -d
+		RewriteRule ^.*$ - [NC,L]
+		RewriteRule ^(.*) /index.html [NC,L]
+	</IfModule>
+    </Directory>
+
+    # Уберите комментарии из следующих строк, если вы установили ресурсы как символьные ссылки
+    # или столкнётесь с проблемами при компиляции ресурсов LESS/Sass/CoffeeScript
+    # <Directory /var/www/project>
+    #     Options FollowSymlinks
+    # </Directory>
+
+    ErrorLog /var/log/apache2/project_error.log
+    CustomLog /var/log/apache2/project_access.log combined
+</VirtualHost>

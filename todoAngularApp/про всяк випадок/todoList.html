@@ -1,0 +1,30 @@
+<!doctype html>
+<html ng-app="todoApp">
+  <head>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular-route.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="angular.js"></script>
+    <link rel="stylesheet" href="todo.css">
+    </head>
+  <body>
+    <h2>Ваш список дел {{url}}</h2>
+    <div ng-controller="TodoListController as todoList">
+      <span>{{todoList.remaining()}} из {{todoList.todos.length}} осталось </span>
+      [ <a href="" ng-click="todoList.archive()">удалить</a> ]
+      <ul class="unstyled">
+        <li ng-repeat="todo in todoList.todos">
+          <label class="checkbox">
+            <input type="checkbox" ng-model="todo.done">
+            <span class="done-{{todo.done}}">{{todo.text}}</span>
+          </label>
+        </li>
+      </ul>
+      <form ng-submit="todoList.addTodo()">
+        <input type="text" ng-model="todoList.todoText"  size="30"
+               placeholder="add new todo here">
+        <input class="btn-primary" type="submit" value="записать в список">
+      </form>
+    </div>
+  </body>
+</html>

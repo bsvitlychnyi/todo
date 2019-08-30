@@ -1,0 +1,107 @@
+<!doctype html>
+<html ng-app="todoApp">
+  <head>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular-route.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="angular.js"></script>
+    <link rel="stylesheet" href="style.css">
+    </head>
+  <body>
+
+<div ng-app="todoApp" ng-controller="loginController">
+<div class="container">
+<div class="row">  
+   
+<div class="col-sm-6">
+    <!-- FORM ============ -->
+  <h2>Форма входа </h2>
+    <form name="userForm" ng-submit="submitForm()" novalidate>
+      
+        <!-- USERNAME -->
+        <div class="form-group" ng-class="{ 'has-error' : userForm.username.$invalid && !userForm.username.$pristine }">
+            <label>Username</label>
+            <input type="text" name="username" class="form-control" ng-model="username" ng-minlength="3" ng-maxlength="8" required>
+
+            <p ng-show="userForm.username.$error.minlength" class="help-block">От трех символов</p>
+            <p ng-show="userForm.username.$error.maxlength" class="help-block">Не больше восьми символов</p>
+        </div>
+        
+       <!-- Password -->
+        <div class="form-group" ng-class="{ 'has-error' : userForm.password.$invalid && !userForm.password.$pristine }">
+            <label>Пароль</label>
+            <input type="password" name="password" class="form-control" ng-model="password" required>
+
+            <p ng-show="userForm.password.$invalid && !userForm.password.$pristine" class="help-block">Введите пароль</p>
+        </div>
+
+       <button type="submit" class="btn btn-primary" ng-disabled="userForm.$invalid">Submit</button>
+        
+    </form>
+  </div>
+  {{$rootScope.token}}
+
+  <div class="col-sm-6">
+    <!-- VALIDATION TABLES ======== -->    
+    <div class="row">
+        <div class="col-xs-3">
+            <h3>Form</h3>
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <td ng-class="{ success: userForm.$valid, danger: userForm.$invalid }">Valid</td>
+                    </tr>
+                    <tr>
+                        <td ng-class="{ success: userForm.$pristine, danger: !userForm.$pristine }">Pristine</td>
+                    </tr>
+                    <tr>
+                        <td ng-class="{ success: userForm.$dirty }">Dirty</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-xs-3">
+            <h3>Username</h3>
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <td ng-class="{ success: userForm.username.$valid, danger: userForm.username.$invalid }">Valid</td>
+                    </tr>
+                    <tr>
+                        <td ng-class="{ success: userForm.username.$pristine, danger: !userForm.username.$pristine }">Pristine</td>
+                    </tr>
+                    <tr>
+                        <td ng-class="{ success: userForm.username.$dirty }">Dirty</td>
+                    </tr>
+                    <tr>
+                        <td ng-class="{ success: userForm.username.$touched }">Touched</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-xs-3">
+            <h3>Password</h3>
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <td ng-class="{ success: userForm.password.$valid, danger: userForm.password.$invalid }">Valid</td>
+                    </tr>
+                    <tr>
+                        <td ng-class="{ success: userForm.password.$pristine, danger: !userForm.password.$pristine }">Pristine</td>
+                    </tr>
+                    <tr>
+                        <td ng-class="{ success: userForm.password.$dirty }">Dirty</td>
+                    </tr>
+                    <tr>
+                        <td ng-class="{ success: userForm.password.$touched }">Touched</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+</div>
+</div>
+</div>
+  </body>
+</html>

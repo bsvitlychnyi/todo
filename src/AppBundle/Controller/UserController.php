@@ -16,12 +16,13 @@ use AppBundle\Entity\User;
 
 class UserController extends FOSRestController
 {
+
     /**
      * @Rest\Get("/user/{userId}/list/{listId}/")
      * @param $userId, $listId
      * @return array|View
      */
-    public function actionGetAllTodo($userId, $listId) // посмотреть задания пользователя
+    public function actionGetAllTodoByList($userId, $listId) // посмотреть задания пользователя
     {
         $todo = $this->getDoctrine()->getRepository('AppBundle:Todo')->findBy(array('list'=>$listId));
         if (empty($todo)){
@@ -51,6 +52,7 @@ class UserController extends FOSRestController
             $newTodo = new Todo;
             $newTodo->setText($text);
             $newTodo->setList($list);
+            $newTodo->setDone(false);
             $em = $this->getDoctrine()->getManager();
             $em->persist($newTodo);
             $em->flush();
@@ -84,7 +86,7 @@ class UserController extends FOSRestController
      * @param $id
      * @return array|View
      */
-    public function actionGetAllLists($id) // посмотреть задания пользователя
+    public function actionGetAllLists($id) // посмотреть задания пользователя по определенному списку
     {
         $todoLists = $this->getDoctrine()->getRepository('AppBundle:TodoList')->findBy(array('user'=>$id));
         if (empty($todoLists)){
@@ -98,7 +100,6 @@ class UserController extends FOSRestController
             return $result;
         }
     }
-
 
     /**
      * @Rest\Post("/user/{userId}/list/{listId}/dell/")
@@ -128,7 +129,7 @@ class UserController extends FOSRestController
     /**
      * @Rest\Post("/user/{userId}/dellListFull/")
      */
-    public function actionDellList(Request $request, $userId) // удалить задани(е/я) пользователя
+    public function actionDellList(Request $request, $userId) // удалить список с заданиями пользователя
     {
         $id = $request->get('id');
 
@@ -155,7 +156,7 @@ class UserController extends FOSRestController
      */
     public function registration(Request $request) // це можна регистрацию делать
     {
-        $data = new User;
+        $user = new User;
         $firstName = $request->get('firstName');
         $username = $request->get('username');
         $email = $request->get('email');
@@ -165,16 +166,64 @@ class UserController extends FOSRestController
         {
             return new View(" NULL VALUES ARE NOT ALLOWED", Response::HTTP_NOT_ACCEPTABLE);
         }
-        $data->setFirstname($firstName);
-        $data->setUsername($username);
-        $data->setEmail($email);
-        $data->setPassword($pass);
-        $data->setApiKey(md5(uniqid($username, true)));
+        $user->setFirstname($firstName);
+        $user->setUsername($username);
+        $user->setEmail($email);
+        $user->setPassword($pass);
+        $user->setApiKey(md5(uniqid($username, true)));
         $em = $this->getDoctrine()->getManager();
-        $em->persist($data);
+        $em->persist($user);
         $em->flush();
-        return array('token'=>$data->getApiKey(), 'userId'=> $data->getId());
+        return new View(array('token'=>$user->getApiKey(),
+                            'userId'=> $user->getId(),
+                            'userName'=>$user->getFirstname(),
+                            'userEmail'=>$user->getEmail(),
+                            'userUsername'=>$user->getUsername()),
+                            Response::HTTP_ACCEPTED);
     }
+
+    /**
+     * @Rest\Post("/changeProfile/user/{id}")
+     */
+    public function changeProfile(Request $request, $id) // изменение профиля
+    {
+        $user = $this->getDoctrine()->getRepository('AppBundle:User')->findOneBy(array('id'=>$id));
+
+        $firstName = $request->get('firstName');
+        $lastName = $request->get('lastName');
+        $username = $request->get('username');
+        $email = $request->get('email');
+
+        if(empty($user))
+        {
+            return new View(" Нет такого юзверя", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        else{
+            if(empty($firstName) or empty($username) or empty($email))
+            {
+                return new View(" NULL VALUES ARE NOT ALLOWED", Response::HTTP_NOT_ACCEPTABLE);
+            }
+            else{
+                $user->setFirstname($firstName);
+                $user->setUsername($username);
+                $user->setEmail($email);
+                $user->setApiKey(md5(uniqid($username, true)));
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($user);
+                $em->flush();
+                return new View(array('token'=>$user->getApiKey(),
+                    'userId'=> $user->getId(),
+                    'userName'=>$user->getFirstname(),
+                    'userEmail'=>$user->getEmail(),
+                    'userUsername'=>$user->getUsername()),
+                    Response::HTTP_ACCEPTED);
+            }
+        }
+
+
+
+    }
+
 
     /**
      * @Rest\Get("/login/")
@@ -189,7 +238,12 @@ class UserController extends FOSRestController
         }
         else{
             if ($user->getPassword() == $pass){
-                return new View(array('token'=>$user->getApiKey(), 'userId'=> $user->getId(), 'userName'=>$user->getFirstname()), Response::HTTP_ACCEPTED);
+                return new View(array('token'=>$user->getApiKey(),
+                                    'userId'=> $user->getId(),
+                                    'userName'=>$user->getFirstname(),
+                                    'userEmail'=>$user->getEmail(),
+                                    'userUsername'=>$user->getUsername()),
+                                    Response::HTTP_ACCEPTED);
             }
             else{
                 return new View("Неверный пароль", Response::HTTP_LOCKED);

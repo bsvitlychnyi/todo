@@ -29,6 +29,13 @@ class Todo
     private $text;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="done", type="boolean")
+     */
+    private $done;
+
+    /**
      * @var string
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\TodoList", inversedBy="list")
@@ -92,6 +99,30 @@ class Todo
     public function getText()
     {
         return $this->text;
+    }
+
+    /**
+     * Set done
+     *
+     * @param boolean $done
+     *
+     * @return Todo
+     */
+    public function setDone($done)
+    {
+        $this->done = $done;
+
+        return $this;
+    }
+
+    /**
+     * Get done
+     *
+     * @return boolean
+     */
+    public function getDone()
+    {
+        return $this->done;
     }
 
 }
